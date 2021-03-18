@@ -1,6 +1,11 @@
-export const getVideoIdByTraversal: (node: Node) => string | null = (
-    node: Node
-) => {
+import { VideoNode } from "./core/VideoStore";
+
+/**
+ * Gets the video id and video link node from the thumbnail container
+ * through BFS traversal
+ * @param node An HTML DOM node that represent the thumbnail container
+ */
+export const getVideoNode: (node: Node) => VideoNode | null = (node: Node) => {
     const nodesToVisit: Node[] = [];
     const visitedNodes: Node[] = [];
 
@@ -24,12 +29,9 @@ export const getVideoIdByTraversal: (node: Node) => string | null = (
                         childNode.nodeName == "A" && // @ts-ignore
                         childNode?.id == "thumbnail"
                     ) {
-                        // @ts-ignore
-                        const videoUrl: string = childNode.getAttribute("href");
-                        const idParser = /\/watch\?v=([^\s&]+)/g;
-                        const match = idParser.exec(videoUrl);
-                        if (match) {
-                            return match[1];
+                        const videoId = getVideoId(childNode);
+                        if (videoId) {
+                            return { videoId: videoId, linkNode: childNode };
                         }
                     } else {
                         // ChildNode is not the element. Traverse it further
@@ -40,4 +42,16 @@ export const getVideoIdByTraversal: (node: Node) => string | null = (
         }
     }
     return null;
+};
+
+export const getVideoId = (node: Node): string | null => {
+    // @ts-ignore
+    const url = node.getAttribute("href");
+    const idParser = /\/watch\?v=([^\s&]+)/g;
+    const match = idParser.exec(url);
+    if (match) {
+        return match[1];
+    } else {
+        return null;
+    }
 };
