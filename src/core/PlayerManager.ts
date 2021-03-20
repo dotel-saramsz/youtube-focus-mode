@@ -15,13 +15,6 @@ export class PlayerManager {
 
         // Initialize the observer that observes mutations in the video player
         this.videoObserver = new MutationObserver(this.videoMutationCallback);
-
-        if (this.videoPlayer) {
-            this.videoObserver.observe(this.videoPlayer, {
-                attributes: true,
-                attributeOldValue: true,
-            });
-        }
     }
 
     /** The mutation callback that responds to the mutations in the video that is being played */
@@ -56,8 +49,17 @@ export class PlayerManager {
         }
     };
 
-    public filterDistractiveVideo = () => {
-        console.log("Filter video in video player");
+    public blockDistractiveVideo = () => {
+        console.log("[Videoplayer] Blocking the video in video player");
+
+        // Start the mutation observations
+        if (this.videoPlayer) {
+            this.videoObserver.observe(this.videoPlayer, {
+                attributes: true,
+                attributeOldValue: true,
+            });
+        }
+
         const playerContainer = document.querySelector(
             "div#primary-inner.ytd-watch-flexy"
         );
@@ -65,6 +67,27 @@ export class PlayerManager {
 
         if (playerContainer && videoId) {
             this.videoFilter.addVideoToStore({
+                videoId: videoId,
+                relevantNode: playerContainer,
+            });
+        }
+    };
+
+    public unblockDistractiveVideo = () => {
+        console.log("[Videoplayer] Unblocking the video in the video player");
+
+        // Stop the mutation observations
+        this.videoObserver.disconnect();
+
+        // Get the video player node
+        const playerContainer = document.querySelector(
+            "div#primary-inner.ytd-watch-flexy"
+        );
+        const videoId = this.videoPlayer?.getAttribute("video-id");
+
+        // Unblock the video
+        if (playerContainer && videoId) {
+            this.videoFilter.unblockVideo({
                 videoId: videoId,
                 relevantNode: playerContainer,
             });

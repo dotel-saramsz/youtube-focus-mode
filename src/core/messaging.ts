@@ -1,12 +1,15 @@
-interface ProcessVideo {
-    type: "PROCESS_VIDEO";
-    videoId: string;
+interface RequestAppStatus {
+    type: "REQ_APP_STATUS";
 }
 
-interface VideoResult {
-    type: "VIDEO_RESULT";
-    videoId: string;
-    block: boolean;
+interface AppStatus {
+    type: "APP_STATUS";
+    appEnabled: boolean;
 }
 
-export type MessageType = ProcessVideo | VideoResult;
+interface ToggleAppStatus {
+    type: "TOGGLE_STATUS";
+    appEnabled: boolean;
+}
+
+export type MessageType = RequestAppStatus | AppStatus | ToggleAppStatus;

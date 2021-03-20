@@ -15,14 +15,6 @@ export class FeedManager {
 
         // Initialize the observer that observes mutations in the feeds
         this.feedObserver = new MutationObserver(this.feedMutationCallback);
-
-        if (this.pageContainer) {
-            this.feedObserver.observe(this.pageContainer, {
-                attributes: true,
-                childList: true,
-                subtree: true,
-            });
-        }
     }
 
     /** Handle the videos that are added into the page
@@ -87,8 +79,17 @@ export class FeedManager {
         }
     };
 
-    public filterDistractiveVideos = () => {
-        console.log("Filter distractive videos");
+    public blockDistractiveVideos = () => {
+        console.log("[Feed] Blocking distractive videos");
+        // Start the mutation observations
+        if (this.pageContainer) {
+            this.feedObserver.observe(this.pageContainer, {
+                attributes: true,
+                childList: true,
+                subtree: true,
+            });
+        }
+
         const videoLinkNodes = document.querySelectorAll(
             "ytd-thumbnail a#thumbnail"
         );
@@ -99,6 +100,30 @@ export class FeedManager {
             if (videoId) {
                 // Add video to the video store
                 this.videoFilter.addVideoToStore({
+                    videoId: videoId,
+                    relevantNode: videoLinkNode,
+                });
+            }
+        }
+    };
+
+    public unblockDistractiveVideos = () => {
+        console.log("[Feed] Unblocking distractive videos");
+
+        // Stop the mutation observation
+        this.feedObserver.disconnect();
+
+        // Unblock all videos in feed
+        const videoLinkNodes = document.querySelectorAll(
+            "ytd-thumbnail a#thumbnail"
+        );
+        for (let index = 0; index < videoLinkNodes.length; index++) {
+            const videoLinkNode = videoLinkNodes[index];
+            const videoId = utils.getVideoId(videoLinkNode);
+
+            if (videoId) {
+                // Add video to the video store
+                this.videoFilter.unblockVideo({
                     videoId: videoId,
                     relevantNode: videoLinkNode,
                 });

@@ -69,7 +69,7 @@ export class VideoFilter {
         this.waitListVideos[videoNode.videoId] = videoNode;
     };
 
-    private blockVideo = (videoNode: VideoNode) => {
+    public blockVideo = (videoNode: VideoNode) => {
         this.blockedVideos[videoNode.videoId] = videoNode;
         // Container node depends on the type
         // For thumbnail, container node is grand-grand-parent of the link node (<a>)
@@ -79,7 +79,7 @@ export class VideoFilter {
         containerNode?.classList.add("hide-display");
     };
 
-    private unblockVideo = (videoNode: VideoNode) => {
+    public unblockVideo = (videoNode: VideoNode) => {
         // Container node is grand-grand-parent of the <a> node
         const containerNode = this.getContainerNode(videoNode);
         // @ts-ignore
