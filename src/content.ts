@@ -8,6 +8,11 @@ import { MessageType } from "./core/messaging";
 const sideDrawer = document.querySelector("tp-yt-app-drawer");
 const sideDrawerMini = document.querySelector("ytd-mini-guide-renderer");
 
+// Instantiate the feed manager
+const feedManager = new FeedManager();
+// Instantiate hte video player manager
+const playerManager = new PlayerManager();
+
 const blockGlobalDistractions = () => {
     // Hide the disturbing elements
     sideDrawer?.classList.add("hide-display");
@@ -21,22 +26,12 @@ const unblockGlobalDistractions = () => {
 };
 
 const blockDistractions = () => {
-    // Instantiate the feed manager
-    const feedManager = new FeedManager();
-    // Instantiate hte video player manager
-    const playerManager = new PlayerManager();
-
     // Filter the videos
     feedManager.blockDistractiveVideos();
     playerManager.blockDistractiveVideo();
 };
 
 const unblockDistractions = () => {
-    // Instantiate the feed manager
-    const feedManager = new FeedManager();
-    // Instantiate hte video player manager
-    const playerManager = new PlayerManager();
-
     // Filter the videos
     feedManager.unblockDistractiveVideos();
     playerManager.unblockDistractiveVideo();
