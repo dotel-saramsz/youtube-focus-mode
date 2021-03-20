@@ -4,13 +4,14 @@
  * */
 import * as youtube from "../api/youtube/api";
 
-export interface VideoIdstoNodes {
-    [videoId: string]: Node;
-}
-
 export interface VideoNode {
+    nodeType: "THUMBNAIL" | "VIDEOPLAYER";
     videoId: string;
     linkNode: Node;
+}
+
+export interface VideoIdstoNodes {
+    [videoId: string]: VideoNode;
 }
 
 /** A singleton class whose instance stores and manages the video elements in the DOM
@@ -53,31 +54,42 @@ export class VideoManager {
         if (videoNode) {
             if (block) {
                 // Block the video
-                this.blockVideo({ videoId: videoId, linkNode: videoNode });
+                this.blockVideo(videoNode);
             } else {
                 // Unblock the video
-                this.unblockVideo({ videoId: videoId, linkNode: videoNode });
+                this.unblockVideo(videoNode);
             }
         }
     };
 
-    private waitForVideo = (video: VideoNode) => {
-        this.waitListVideos[video.videoId] = video.linkNode;
+    private getContainerNode = (node: VideoNode) => {
+        if (node.nodeType == "THUMBNAIL") {
+            return node.linkNode.parentElement?.parentElement?.parentElement;
+        } else {
+            return node.linkNode;
+        }
     };
 
-    private blockVideo = (video: VideoNode) => {
-        this.blockedVideos[video.videoId] = video.linkNode;
-        // Container node is grand-grand-parent of the <a> node
-        const containerNode =
-            video.linkNode.parentElement?.parentElement?.parentElement;
+    private waitForVideo = (videoNode: VideoNode) => {
+        this.waitListVideos[videoNode.videoId] = videoNode;
+    };
+
+    private blockVideo = (videoNode: VideoNode) => {
+        this.blockedVideos[videoNode.videoId] = videoNode;
+        // Container node depends on the type
+        // For thumbnail, container node is grand-grand-parent of the link node (<a>)
+        // For videoplayer, container node is the link node
+        const containerNode = this.getContainerNode(videoNode);
+        // @ts-ignore
         containerNode?.classList.add("hide-display");
     };
 
-    private unblockVideo = (video: VideoNode) => {
+    private unblockVideo = (videoNode: VideoNode) => {
         // Container node is grand-grand-parent of the <a> node
-        const containerNode =
-            video.linkNode.parentElement?.parentElement?.parentElement;
+        const containerNode = this.getContainerNode(videoNode);
+        // @ts-ignore
         if (containerNode?.classList.contains("hide-display")) {
+            // @ts-ignore
             containerNode.classList.remove("hide-display");
         }
     };
