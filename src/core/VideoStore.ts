@@ -61,7 +61,6 @@ export class VideoStore {
         const containerNode =
             video.linkNode.parentElement?.parentElement?.parentElement;
         containerNode?.classList.add("hide-display");
-        console.log(containerNode);
     };
 
     private unblockVideo = (video: VideoNode) => {

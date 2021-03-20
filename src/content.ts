@@ -12,9 +12,17 @@ interface VideoBlockList {
 // Initialize the VideoStore class
 const videoStore = new VideoStore();
 
-const videosGridContainer = document.querySelector(
-    "div#contents.style-scope.ytd-rich-grid-renderer"
-);
+// Select various DOM elements
+// The whole page container
+const pageContainer = document.querySelector("ytd-page-manager");
+// The home page container
+const homePageContainer = document.querySelector("ytd-browse");
+// The video player page container
+const playerPageContainer = document.querySelector("ytd-watch-flexy");
+// The search results page container
+const searchPageContainer = document.querySelector("ytd-search");
+
+const videosGridContainer = document.querySelector("ytd-page-manager");
 const feedFilterBar = document.querySelector(
     "ytd-feed-filter-chip-bar-renderer"
 );
@@ -22,39 +30,10 @@ const topBarLogo = document.querySelector("ytd-topbar-logo-renderer");
 const sideDrawer = document.querySelector("tp-yt-app-drawer");
 const sideDrawerMini = document.querySelector("ytd-mini-guide-renderer");
 
-videosGridContainer?.classList.add("videos-grid-container");
+// Hide the disturbing elements
 feedFilterBar?.classList.add("hide-display");
 sideDrawer?.classList.add("hide-display");
-sideDrawer?.classList.add("hide-display");
-
-// const observeVideoLinkMutation = (videoNode: VideoNode) => {
-//     const linkObserver = new MutationObserver((mutation) => {
-
-//     });
-
-//     linkObserver.observe(videoNode.node, { })
-
-// }
-
-// const processVideos = async (videoIds: string[]): Promise<VideoBlockList> => {
-//     const chosenCategories = ["27", "28"];
-//     const videoDataList = await youtube.getVideoData(videoIds);
-
-//     const videoBlockList: VideoBlockList = {};
-//     for (const videoData of videoDataList) {
-//         let block = true;
-//         if (chosenCategories.includes(videoData.category)) {
-//             block = false;
-//         }
-
-//         // console.log(
-//         //     `[VIDEO-DATA] id: ${videoData.videoId} | category: ${videoData.category} | block: ${block}`
-//         // );
-
-//         videoBlockList[videoData.videoId] = block;
-//     }
-//     return videoBlockList;
-// };
+sideDrawerMini?.classList.add("hide-display");
 
 const filterDistractiveVideos = () => {
     const videoLinkNodes = document.querySelectorAll(
@@ -114,18 +93,3 @@ if (videosGridContainer) {
 }
 
 filterDistractiveVideos();
-
-// Add the listener to listen to messages from background script
-// chrome.runtime.onMessage.addListener(
-//     (message: MessageType, sender, sendResponse) => {
-//         switch (message.type) {
-//             case "VIDEO_RESULT":
-//                 console.log(`Video Processed Message: ${message.videoId}`);
-//                 videoStore.onVideoProcessed(message.videoId, message.block);
-//                 break;
-
-//             default:
-//                 break;
-//         }
-//     }
-// );
