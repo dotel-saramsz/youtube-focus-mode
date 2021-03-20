@@ -13,13 +13,23 @@ export interface VideoNode {
     linkNode: Node;
 }
 
-export class VideoStore {
+/** A singleton class whose instance stores and manages the video elements in the DOM
+ * and also handles blocking and unblocking them
+ */
+export class VideoManager {
+    /** The private instance */
+    private static _instance: VideoManager;
     private waitListVideos: VideoIdstoNodes;
     private blockedVideos: VideoIdstoNodes;
 
-    constructor() {
+    private constructor() {
         this.waitListVideos = {};
         this.blockedVideos = {};
+    }
+
+    public static get instance(): VideoManager {
+        VideoManager._instance = VideoManager._instance || new VideoManager();
+        return VideoManager._instance;
     }
 
     private processVideo = async (videoId: string): Promise<boolean> => {

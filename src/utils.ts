@@ -1,4 +1,4 @@
-import { VideoNode } from "./core/VideoStore";
+import { VideoNode } from "./core/VideoManager";
 
 /**
  * Gets the video id and video link node from the thumbnail container
