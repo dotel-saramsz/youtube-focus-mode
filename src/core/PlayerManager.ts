@@ -1,13 +1,18 @@
-import { VideoManager } from "./VideoManager";
+import { VideoFilter } from "./VideoFilter";
 import * as utils from "../utils";
 
 /** The class that manages the video feeds */
 export class PlayerManager {
     videoPlayer: Element | null;
     videoObserver: MutationObserver;
+    videoFilter: VideoFilter;
 
     constructor() {
         this.videoPlayer = document.querySelector("ytd-watch-flexy");
+
+        // Initialize the video filter
+        this.videoFilter = new VideoFilter("VIDEOPLAYER");
+
         // Initialize the observer that observes mutations in the video player
         this.videoObserver = new MutationObserver(this.videoMutationCallback);
 
@@ -41,10 +46,9 @@ export class PlayerManager {
                         mutation.target
                     );
                     if (relevantNode) {
-                        VideoManager.instance.addVideoToStore({
-                            nodeType: "VIDEOPLAYER",
+                        this.videoFilter.addVideoToStore({
                             videoId: newVideoId,
-                            linkNode: relevantNode,
+                            relevantNode: relevantNode,
                         });
                     }
                 }
@@ -60,10 +64,9 @@ export class PlayerManager {
         const videoId = this.videoPlayer?.getAttribute("video-id");
 
         if (playerContainer && videoId) {
-            VideoManager.instance.addVideoToStore({
-                nodeType: "VIDEOPLAYER",
+            this.videoFilter.addVideoToStore({
                 videoId: videoId,
-                linkNode: playerContainer,
+                relevantNode: playerContainer,
             });
         }
     };

@@ -1,4 +1,4 @@
-import { VideoNode } from "./core/VideoManager";
+import { VideoNode } from "./core/VideoFilter";
 
 /**
  * Gets the video id and video link node from the thumbnail container
@@ -36,7 +36,7 @@ export const getVideoThumbnailNode: (node: Node) => VideoNode | null = (
                             return {
                                 nodeType: "THUMBNAIL",
                                 videoId: videoId,
-                                linkNode: childNode,
+                                relevantNode: childNode,
                             };
                         }
                     } else {

@@ -5,9 +5,8 @@
 import * as youtube from "../api/youtube/api";
 
 export interface VideoNode {
-    nodeType: "THUMBNAIL" | "VIDEOPLAYER";
     videoId: string;
-    linkNode: Node;
+    relevantNode: Node;
 }
 
 export interface VideoIdstoNodes {
@@ -17,20 +16,15 @@ export interface VideoIdstoNodes {
 /** A singleton class whose instance stores and manages the video elements in the DOM
  * and also handles blocking and unblocking them
  */
-export class VideoManager {
-    /** The private instance */
-    private static _instance: VideoManager;
+export class VideoFilter {
+    private filterType: "FEED" | "VIDEOPLAYER";
     private waitListVideos: VideoIdstoNodes;
     private blockedVideos: VideoIdstoNodes;
 
-    private constructor() {
+    constructor(filterType: "FEED" | "VIDEOPLAYER") {
+        this.filterType = filterType;
         this.waitListVideos = {};
         this.blockedVideos = {};
-    }
-
-    public static get instance(): VideoManager {
-        VideoManager._instance = VideoManager._instance || new VideoManager();
-        return VideoManager._instance;
     }
 
     private processVideo = async (videoId: string): Promise<boolean> => {
@@ -63,10 +57,11 @@ export class VideoManager {
     };
 
     private getContainerNode = (node: VideoNode) => {
-        if (node.nodeType == "THUMBNAIL") {
-            return node.linkNode.parentElement?.parentElement?.parentElement;
+        if (this.filterType == "FEED") {
+            return node.relevantNode.parentElement?.parentElement
+                ?.parentElement;
         } else {
-            return node.linkNode;
+            return node.relevantNode;
         }
     };
 
