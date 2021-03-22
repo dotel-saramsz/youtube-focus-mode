@@ -1,0 +1,14 @@
+.category-header {
+    margin-top: 2%;
+    margin-bottom: 4%;
+    width: 100%;
+}
+
+.category-header-title {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.category-header-icon {
+    cursor: pointer;
+}

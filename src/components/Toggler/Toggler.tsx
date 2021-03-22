@@ -1,7 +1,8 @@
 import * as React from "react";
-import { Switch } from "antd";
+import { Switch, Row, Col } from "antd";
 import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
 import { MessageType } from "../../core/messaging";
+import "./Toggler.css";
 
 export const Toggler = () => {
     const [appEnabled, setAppEnabled] = React.useState(false);
@@ -46,13 +47,20 @@ export const Toggler = () => {
     });
 
     return (
-        <div className="toggleSwitch">
-            <Switch
-                checkedChildren={<CheckOutlined />}
-                unCheckedChildren={<CloseOutlined />}
-                checked={appEnabled}
-                onChange={onToggled}
-            />
+        <div className="toggler-container">
+            <Row gutter={16} justify="center" align="middle">
+                <Col className="gutter-row" span={10}>
+                    <span className="toggler-text">Focus Mode</span>
+                </Col>
+                <Col className="toggler-switch" span={4}>
+                    <Switch
+                        checkedChildren={<CheckOutlined />}
+                        unCheckedChildren={<CloseOutlined />}
+                        checked={appEnabled}
+                        onChange={onToggled}
+                    />
+                </Col>
+            </Row>
         </div>
     );
 };

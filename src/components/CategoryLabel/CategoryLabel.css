@@ -1,0 +1,25 @@
+.category-label {
+    padding-left: 8px;
+    padding-right: 8px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.category-label-chosen {
+    background-color: #357B45;
+    border: 1px solid #357B45;
+}
+
+.category-label-unchosen {
+    border: 1px solid #F1F1F1;
+}
+
+.category-label-clickable {
+    cursor: pointer;
+}
+
+.category-label-unclickable {
+    pointer-events: none;
+}

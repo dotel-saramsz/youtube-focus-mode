@@ -1,0 +1,50 @@
+@import "~antd/dist/antd.css";
+
+.app-logo {
+    height: 48px;
+    width: 48px;
+    pointer-events: none;
+}
+
+.app-body {
+    width: 100%;
+    padding: 15px 22px 15px 22px;
+}
+
+.app-title {
+    font-size: 20px;
+}
+
+.app-description {
+    font-size: 14px;
+    margin-top: 4%;
+    margin-bottom: 4%;
+}
+
+.category-box {
+    max-height: 250px;
+    padding-right: 2px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.category-box::-webkit-scrollbar-track
+{
+    background-color: #3C4047;
+}
+
+.category-box::-webkit-scrollbar
+{
+	width: 4px;
+	background-color: #3C4047;
+}
+
+.category-box::-webkit-scrollbar-thumb
+{
+    background-color: #F1F1F1;
+}
+
+
+
+
+

@@ -30,8 +30,11 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.6.2",
+    "@types/classnames": "^2.2.11",
     "antd": "^4.14.0",
     "axios": "^0.21.1",
+    "classnames": "^2.2.6",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-hot-loader": "^4.13.0"
