@@ -22,7 +22,7 @@
 }
 
 .category-box {
-    max-height: 250px;
+    height: 150px;
     padding-right: 2px;
     overflow-x: hidden;
     overflow-y: auto;
