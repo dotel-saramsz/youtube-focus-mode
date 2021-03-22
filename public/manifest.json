@@ -1,6 +1,6 @@
 {
-    "name": "No Distraction YouTube",
-    "description": "Chrome Extension that blocks and hides YouTube videos from 'distractive' categories.",
+    "name": "YouTube Focus Mode",
+    "description": "Chrome Extension that allows you to focus by blocking YouTube videos from 'distractive' categories.",
     "manifest_version": 3,
     "version": "1.0.0",
     "icons": {
