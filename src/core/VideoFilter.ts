@@ -80,11 +80,12 @@ export class VideoFilter {
     public blockVideo = (videoNode: VideoNode) => {
         this.blockedVideos[videoNode.videoId] = videoNode;
         // Container node depends on the type
-        // For thumbnail, container node is grand-grand-parent of the link node (<a>)
         // For videoplayer, container node is the link node
         const containerNode = this.getContainerNode(videoNode);
         // @ts-ignore
         containerNode?.classList.add("hide-display");
+        // If the filter is for video player, we have additional blocking to do
+        this.blockVideoPlayer(videoNode);
     };
 
     public unblockVideo = (videoNode: VideoNode) => {
@@ -95,6 +96,8 @@ export class VideoFilter {
             // @ts-ignore
             containerNode.classList.remove("hide-display");
         }
+        // If the filter is for video player, we have additional unblocking to do
+        this.unblockVideoPlayer(videoNode);
     };
 
     /**Add the video to the store */
@@ -105,5 +108,40 @@ export class VideoFilter {
         this.processVideo(video.videoId).then((block) => {
             this.onVideoProcessed(video.videoId, block);
         });
+    };
+
+    /** Additional blocking for video player like
+     * pausing the video and hiding the theater mode
+     */
+    private blockVideoPlayer = (videoNode: VideoNode) => {
+        // Get the theater container
+        const theaterContainer = document.querySelector(
+            "div#player-theater-container"
+        );
+        // Get the HTML5 video element
+        const videoElement = document.querySelector("video.html5-main-video");
+        theaterContainer?.classList.add("hide-display");
+        if (videoElement) {
+            // @ts-ignore
+            videoElement.pause();
+        }
+    };
+
+    /** Additional unblocking for video player like
+     * pausing the video and hiding the theater mode
+     */
+    private unblockVideoPlayer = (videoNode: VideoNode) => {
+        // Get the theater container
+        const theaterContainer = document.querySelector(
+            "div#player-theater-container"
+        );
+        // Get the HTML5 video element
+        const videoElement = document.querySelector("video.html5-main-video");
+        theaterContainer?.classList.remove("hide-display");
+        // @ts-ignore
+        if (videoElement && videoElement.paused) {
+            // @ts-ignore
+            videoElement.play();
+        }
     };
 }
