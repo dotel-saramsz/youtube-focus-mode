@@ -79,8 +79,10 @@ export class FeedManager {
         }
     };
 
-    public blockDistractiveVideos = () => {
+    public blockDistractiveVideos = (allowedCategories: string[]) => {
         console.log("[Feed] Blocking distractive videos");
+        // Set the video filter's allowList
+        this.videoFilter.allowedCategories = allowedCategories;
         // Start the mutation observations
         if (this.pageContainer) {
             this.feedObserver.observe(this.pageContainer, {

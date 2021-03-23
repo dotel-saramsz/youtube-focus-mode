@@ -49,8 +49,11 @@ export class PlayerManager {
         }
     };
 
-    public blockDistractiveVideo = () => {
+    public blockDistractiveVideo = (allowedCategories: string[]) => {
         console.log("[Videoplayer] Blocking the video in video player");
+
+        // Set the allowList for the video filter
+        this.videoFilter.allowedCategories = allowedCategories;
 
         // Start the mutation observations
         if (this.videoPlayer) {

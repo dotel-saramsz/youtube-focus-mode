@@ -1,18 +1,21 @@
 import * as React from "react";
-import { Row, Col } from "antd";
+import { Row, Col, notification } from "antd";
 import { CategoriesHeader } from "../CategoriesHeader/CategoriesHeader";
 import { CategoriesDisplay } from "../CategoriesDisplay/CategoriesDisplay";
 import { CategoriesSelector } from "../CategoriesSelector/CategoriesSelector";
 import logo from "../../assets/logo.svg";
-import { AppMode } from "../../types";
+import { AppMode, MessageType } from "../../types";
 import "./Body.css";
-import { CATEGORIES_NAMES_TO_IDS } from "../../constants";
+import {
+    CATEGORIES_NAMES_TO_IDS,
+    defaultChosenCategories,
+} from "../../constants";
+import * as utils from "../../utils";
 
 export const Body = () => {
-    const [appMode, setAppMode] = React.useState(AppMode.Select);
-    const defaultChosen: string[] = [];
+    const [appMode, setAppMode] = React.useState(AppMode.Display);
     const [chosenCategories, setChosenCategories] = React.useState(
-        defaultChosen
+        defaultChosenCategories
     );
 
     const allCategories = Object.keys(CATEGORIES_NAMES_TO_IDS);
@@ -20,11 +23,11 @@ export const Body = () => {
     const onCategoryChosen = (category: string) => {
         if (chosenCategories.includes(category)) {
             const newList = chosenCategories.filter((c) => c !== category);
-            setChosenCategories(newList);
+            setChosenCategories([...newList]);
         } else {
             const newList = [...chosenCategories];
             newList.push(category);
-            setChosenCategories(newList);
+            setChosenCategories([...newList]);
         }
     };
 
@@ -33,10 +36,38 @@ export const Body = () => {
         if (currentMode == AppMode.Display) {
             setAppMode(AppMode.Select);
         } else {
-            // Save the current chosen categories in chrome backend
-            setAppMode(AppMode.Display);
+            chrome.runtime.sendMessage({
+                type: "CHANGE_CHOSEN_CATEGORIES",
+                chosenCategories: [...chosenCategories],
+            });
         }
     };
+
+    React.useEffect(() => {
+        // Get the chosen categories from chrome storage
+        chrome.storage.local.get((items) => {
+            if (items.hasOwnProperty("chosenCategories")) {
+                const categoryNames = utils.getCategoryNames(
+                    items["chosenCategories"]
+                );
+                setChosenCategories(categoryNames);
+            }
+        });
+
+        // Add the chosen categories listener
+        chrome.runtime.onMessage.addListener(
+            (message: MessageType, sender, sendResponse) => {
+                switch (message.type) {
+                    case "CHOSEN_CATEGORIES_LIST":
+                        setChosenCategories(message.chosenCategories);
+                        setAppMode(AppMode.Display);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        );
+    }, []);
 
     return (
         <div className="app-body">

@@ -3,6 +3,7 @@
  * Also handles the interaction of the DOM element
  * */
 import * as youtube from "../api/youtube/api";
+import * as utils from "../utils";
 
 export interface VideoNode {
     videoId: string;
@@ -20,6 +21,7 @@ export class VideoFilter {
     private filterType: "FEED" | "VIDEOPLAYER";
     private waitListVideos: VideoIdstoNodes;
     private blockedVideos: VideoIdstoNodes;
+    private allowList: string[] = [];
 
     constructor(filterType: "FEED" | "VIDEOPLAYER") {
         this.filterType = filterType;
@@ -27,14 +29,20 @@ export class VideoFilter {
         this.blockedVideos = {};
     }
 
+    public set allowedCategories(categories: string[]) {
+        // The allow list should contain category ids but the
+        // provided categories has category names
+        const categoryIds = utils.getCategoryIds(categories);
+        this.allowList = [...categoryIds];
+    }
+
     private processVideo = async (videoId: string): Promise<boolean> => {
-        const chosenCategories = ["27", "28"];
         const videoDataList = await youtube.getVideoData([videoId]);
 
         const videoData = videoDataList[0];
 
         let block = true;
-        if (chosenCategories.includes(videoData.category)) {
+        if (this.allowList.includes(videoData.category)) {
             block = false;
         }
 

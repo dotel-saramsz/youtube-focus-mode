@@ -1,4 +1,4 @@
-export const CATEGORIES_IDS_TO_NAMES = {
+export const CATEGORIES_IDS_TO_NAMES: { [name: string]: string } = {
     "31": "Anime/Animation",
     "40": "Sci-Fi/Fantasy",
     "22": "People & Blogs",
@@ -33,7 +33,7 @@ export const CATEGORIES_IDS_TO_NAMES = {
     "33": "Classics",
 };
 
-export const CATEGORIES_NAMES_TO_IDS = {
+export const CATEGORIES_NAMES_TO_IDS: { [name: string]: string[] } = {
     "Anime/Animation": ["31"],
     "Sci-Fi/Fantasy": ["40"],
     "People & Blogs": ["22"],
@@ -66,3 +66,7 @@ export const CATEGORIES_NAMES_TO_IDS = {
     Trailers: ["44"],
     Classics: ["33"],
 };
+
+export const defaultAppStatus = true;
+
+export const defaultChosenCategories = ["Science & Technology", "Education"];

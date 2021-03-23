@@ -1,3 +1,4 @@
+import { CATEGORIES_IDS_TO_NAMES, CATEGORIES_NAMES_TO_IDS } from "./constants";
 import { VideoNode } from "./core/VideoFilter";
 
 /**
@@ -97,4 +98,22 @@ export const getVideoId = (node: Node): string | null => {
     } else {
         return null;
     }
+};
+
+export const getCategoryIds = (categoryNames: string[]) => {
+    const categoryIds: string[] = [];
+    categoryNames.forEach((category) => {
+        const ids = CATEGORIES_NAMES_TO_IDS[category];
+        categoryIds.push(...CATEGORIES_NAMES_TO_IDS[category]);
+    });
+    return categoryIds;
+};
+
+export const getCategoryNames = (categoryIds: string[]) => {
+    const categoryNames = new Set<string>();
+    categoryIds.forEach((cid) => {
+        categoryNames.add(CATEGORIES_IDS_TO_NAMES[cid]);
+    });
+    const sortedList = Array.from(categoryNames).sort();
+    return sortedList;
 };

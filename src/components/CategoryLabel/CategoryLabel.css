@@ -21,5 +21,6 @@
 }
 
 .category-label-unclickable {
+    cursor: default;
     pointer-events: none;
 }

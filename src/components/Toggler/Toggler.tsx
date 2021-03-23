@@ -1,11 +1,12 @@
 import * as React from "react";
 import { Switch, Row, Col } from "antd";
 import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
-import { MessageType } from "../../core/messaging";
+import { MessageType } from "../../types";
 import "./Toggler.css";
+import { defaultAppStatus } from "../../constants";
 
 export const Toggler = () => {
-    const [appEnabled, setAppEnabled] = React.useState(false);
+    const [appEnabled, setAppEnabled] = React.useState(defaultAppStatus);
 
     const onToggled = () => {
         // The app state was toggled by the user
@@ -20,17 +21,12 @@ export const Toggler = () => {
     };
 
     React.useEffect(() => {
-        // Check the app status
-        chrome.runtime.sendMessage({ type: "REQ_APP_STATUS" });
-
-        // chrome.storage.local.get((items) => {
-        //     if (
-        //         items["appEnabled"] &&
-        //         typeof items["appEnabled"] == "boolean"
-        //     ) {
-        //         setAppEnabled(items["appEnabled"]);
-        //     }
-        // });
+        // Get the app status from chrome storage
+        chrome.storage.local.get((items) => {
+            if (items.hasOwnProperty("appEnabled")) {
+                setAppEnabled(items["appEnabled"]);
+            }
+        });
 
         // Add the app status listener
         chrome.runtime.onMessage.addListener(
@@ -44,7 +40,7 @@ export const Toggler = () => {
                 }
             }
         );
-    });
+    }, []);
 
     return (
         <div className="toggler-container">

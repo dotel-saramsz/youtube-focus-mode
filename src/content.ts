@@ -1,8 +1,14 @@
 // This file is injected as a content script
+import { defaultAppStatus, defaultChosenCategories } from "./constants";
 import "./content.css";
 import { FeedManager } from "./core/FeedManager";
 import { PlayerManager } from "./core/PlayerManager";
-import { MessageType } from "./core/messaging";
+import { MessageType } from "./types";
+import * as utils from "./utils";
+
+// Define global state variables
+let appEnabled = defaultAppStatus;
+let chosenCategories: string[] = defaultChosenCategories;
 
 // Select some global DOM elements
 const sideDrawer = document.querySelector("tp-yt-app-drawer");
@@ -25,10 +31,10 @@ const unblockGlobalDistractions = () => {
     sideDrawerMini?.classList.remove("hide-display");
 };
 
-const blockDistractions = () => {
+const blockDistractions = (allowedCategories: string[]) => {
     // Filter the videos
-    feedManager.blockDistractiveVideos();
-    playerManager.blockDistractiveVideo();
+    feedManager.blockDistractiveVideos(allowedCategories);
+    playerManager.blockDistractiveVideo(allowedCategories);
 };
 
 const unblockDistractions = () => {
@@ -37,34 +43,51 @@ const unblockDistractions = () => {
     playerManager.unblockDistractiveVideo();
 };
 
-// Get the current app status
-let appEnabled = true;
-chrome.runtime.sendMessage({ type: "REQ_APP_STATUS" });
-// chrome.storage.local.get((items) => {
-//     if (items["appEnabled"] && typeof items["appEnabled"] == "boolean") {
-//         appEnabled = items["appEnabled"];
-//         toggleAppStatus(appEnabled);
-//     }
-// });
+const runApp = (appEnabled: boolean, chosenCategories: string[]) => {
+    if (appEnabled) {
+        // Block the distractions
+        blockGlobalDistractions();
+        blockDistractions(chosenCategories);
+    } else {
+        // Unblock the distractions
+        unblockGlobalDistractions();
+        unblockDistractions();
+    }
+};
 
 // Add listener to listen to the app status changes
 chrome.runtime.onMessage.addListener(
     (message: MessageType, sender, sendResponse) => {
         switch (message.type) {
             case "APP_STATUS":
-                console.log(`[Content] App status: ${message.appEnabled}`);
-                if (message.appEnabled) {
-                    // Block the distractions
-                    blockGlobalDistractions();
-                    blockDistractions();
-                } else {
-                    // Unblock the distractions
-                    unblockGlobalDistractions();
-                    unblockDistractions();
-                }
+                appEnabled = message.appEnabled;
+                console.log(
+                    `[Content] App status changed: ${message.appEnabled}`
+                );
+                runApp(appEnabled, chosenCategories);
+                break;
+            case "CHOSEN_CATEGORIES_LIST":
+                chosenCategories = message.chosenCategories;
+                console.log(
+                    `[Content] Chosen categories changed: ${message.chosenCategories}`
+                );
+                runApp(appEnabled, chosenCategories);
                 break;
             default:
                 break;
         }
     }
 );
+
+// Get the app status and chosen categories from chrome storage for the first run
+chrome.storage.local.get((items) => {
+    if (items.hasOwnProperty("appEnabled")) {
+        appEnabled = items["appEnabled"];
+    }
+    if (items.hasOwnProperty("chosenCategories")) {
+        const categoryNames = utils.getCategoryNames(items["chosenCategories"]);
+        chosenCategories = categoryNames;
+    }
+    // First run
+    runApp(appEnabled, chosenCategories);
+});

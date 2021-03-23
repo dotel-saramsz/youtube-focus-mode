@@ -15,7 +15,7 @@ export const CategoriesDisplay: React.FC<CategoryDisplayProps> = (props) => {
                     <CategoryLabel
                         text={category}
                         isChosen={props.chosenCategories.includes(category)}
-                        isClickable={true}
+                        isClickable={false}
                         onClicked={(category: string) => {
                             console.log("No actions taken!");
                         }}
