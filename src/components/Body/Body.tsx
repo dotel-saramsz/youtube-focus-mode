@@ -3,7 +3,7 @@ import { Row, Col, notification } from "antd";
 import { CategoriesHeader } from "../CategoriesHeader/CategoriesHeader";
 import { CategoriesDisplay } from "../CategoriesDisplay/CategoriesDisplay";
 import { CategoriesSelector } from "../CategoriesSelector/CategoriesSelector";
-import logo from "../../assets/logo.svg";
+import logo from "../../assets/logo.png";
 import { AppMode, MessageType } from "../../types";
 import "./Body.css";
 import {
