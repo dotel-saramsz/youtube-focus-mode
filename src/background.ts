@@ -2,34 +2,6 @@ import { defaultAppStatus, defaultChosenCategories } from "./constants";
 import { MessageType } from "./types";
 import * as utils from "./utils";
 
-// Read the variables from local storage
-chrome.storage.local.get((items) => {
-    // Read the current app status from local storage
-    if (!items.hasOwnProperty("appEnabled")) {
-        // The variable is not present in local storage.
-        // Probably because this is the first open after installation.
-        // Save the default value
-        chrome.storage.local.set({ appEnabled: defaultAppStatus }, () => {
-            console.log(
-                "[Background] App status initialized with default value"
-            );
-        });
-    }
-    // Read the chosen categories list from local storage
-    if (!items.hasOwnProperty("chosenCategories")) {
-        // The variable is not present in local storage.
-        // Save the default value.
-        chrome.storage.local.set(
-            { chosenCategories: utils.getCategoryIds(defaultChosenCategories) },
-            () => {
-                console.log(
-                    "[Background] Chosen categories for app initialized with default value"
-                );
-            }
-        );
-    }
-});
-
 /** Send the message to the popup and all content scripts */
 const sendMessageToEveryOne = (message: MessageType) => {
     // Send app status to the popup
@@ -58,6 +30,39 @@ const sendMessageToSender = (
         chrome.runtime.sendMessage(message);
     }
 };
+
+// Initialize the extension on installation
+const initializeStorage = () => {
+    chrome.storage.local.set({ appEnabled: defaultAppStatus }, () => {
+        console.log("[Background] App status initialized with default value");
+    });
+    chrome.storage.local.set(
+        { chosenCategories: utils.getCategoryIds(defaultChosenCategories) },
+        () => {
+            console.log(
+                "[Background] Chosen categories for app initialized with default value"
+            );
+        }
+    );
+};
+
+chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason == "install") {
+        // Extension is installed for the first time.
+        // Variables are not present in the storage.
+        // Initialize them.
+        initializeStorage();
+    } else {
+        chrome.storage.local.get((items) => {
+            if (
+                !items.hasOwnProperty("appEnabled") ||
+                !items.hasOwnProperty("chosenCategories")
+            ) {
+                initializeStorage();
+            }
+        });
+    }
+});
 
 // Respond to messages from popup or content script
 chrome.runtime.onMessage.addListener(
