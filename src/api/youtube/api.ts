@@ -18,7 +18,6 @@ export const getVideoData = async (
     const videoList: YoutubeVideoData[] = [];
 
     try {
-        console.log(`Sending API request with ${videoIds.length} items`);
         const response = await axios.get(FETCH_URL, {
             params: queryParameters,
         });
