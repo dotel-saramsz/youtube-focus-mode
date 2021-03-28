@@ -1,6 +1,12 @@
 import { VideoFilter } from "./VideoFilter";
 import * as utils from "../utils";
 
+const FEED_FILTER_TAGS = [
+    "ytd-feed-filter-chip-bar-renderer",
+    "yt-related-chip-cloud-renderer",
+    "ytd-search-sub-menu-renderer",
+];
+
 /** The class that manages the video feeds */
 export class FeedManager {
     pageContainer: Element | null;
@@ -24,13 +30,11 @@ export class FeedManager {
      * (since YouTube is a Single Page App, videos get 'added')
      */
     private handleVideoAdditions = (node: Node) => {
-        if (node.nodeName == "YTD-THUMBNAIL") {
-            // Get the video link node and id
-            const videoNode = utils.getVideoThumbnailNode(node);
-            if (videoNode) {
-                // Add video to the video store
-                this.videoFilter.addVideoToStore(videoNode);
-            }
+        // Get the video link node and id
+        const videoNode = utils.getVideoThumbnailNode(node);
+        if (videoNode) {
+            // Add video to the video store
+            this.videoFilter.addVideoToStore(videoNode);
         }
     };
 
@@ -40,19 +44,14 @@ export class FeedManager {
      * 2. When user clicks the logo at the topbar while at home
      */
     private handleFeedChange = (mutation: MutationRecord) => {
-        if (
-            mutation.target.nodeName == "A" && // @ts-ignore
-            mutation.target.getAttribute("id") == "thumbnail"
-        ) {
-            const videoLinkNode = mutation.target;
-            const videoId = utils.getVideoId(videoLinkNode);
+        const videoLinkNode = mutation.target;
+        const videoId = utils.getVideoId(videoLinkNode);
 
-            if (videoId) {
-                this.videoFilter.addVideoToStore({
-                    videoId: videoId,
-                    relevantNode: videoLinkNode,
-                });
-            }
+        if (videoId) {
+            this.videoFilter.addVideoToStore({
+                videoId: videoId,
+                relevantNode: videoLinkNode,
+            });
         }
     };
 
@@ -65,6 +64,10 @@ export class FeedManager {
             mutation.addedNodes.forEach((node, key, parent) => {
                 if (node.nodeName == "YTD-THUMBNAIL") {
                     this.handleVideoAdditions(node);
+                } else if (
+                    FEED_FILTER_TAGS.includes(node.nodeName.toLowerCase())
+                ) {
+                    this.blockRecommendations(node);
                 }
             });
 
@@ -77,6 +80,19 @@ export class FeedManager {
                 this.handleFeedChange(mutation);
             }
         }
+    };
+
+    /** Blocks the feed filter containers which contain the
+     * recommendation chips
+     */
+    private blockRecommendations = (recommendationContainer: Node) => {
+        // @ts-ignore
+        recommendationContainer.classList.add("hide-display");
+    };
+
+    private unblockRecommendations = (recommendationContainer: Node) => {
+        // @ts-ignore
+        recommendationContainer.classList.remove("hide-display");
     };
 
     public blockDistractiveVideos = (allowedCategories: string[]) => {
@@ -92,6 +108,7 @@ export class FeedManager {
             });
         }
 
+        // Block the visible video containers in the feed
         const videoLinkNodes = document.querySelectorAll(
             "ytd-thumbnail a#thumbnail"
         );
@@ -107,6 +124,13 @@ export class FeedManager {
                 });
             }
         }
+
+        // Block the recommendation bars
+        this.recommendationContainers.forEach((containerNode) => {
+            if (containerNode) {
+                this.blockRecommendations(containerNode);
+            }
+        });
     };
 
     public unblockDistractiveVideos = () => {
@@ -131,5 +155,22 @@ export class FeedManager {
                 });
             }
         }
+
+        // Unblock the recommendation bars
+        this.recommendationContainers.forEach((containerNode) => {
+            if (containerNode) {
+                this.unblockRecommendations(containerNode);
+            }
+        });
     };
+
+    /** Get the container element that contains the recommendation (filter) chips
+     * for this feed
+     */
+    private get recommendationContainers(): (Element | null)[] {
+        const containerElements = FEED_FILTER_TAGS.map((selector) =>
+            document.querySelector(selector)
+        );
+        return containerElements;
+    }
 }
