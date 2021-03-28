@@ -1,5 +1,6 @@
 import { VideoFilter } from "./VideoFilter";
 import * as utils from "../utils";
+import { FeedFilter } from "./FeedFilter";
 
 const FEED_FILTER_TAGS = [
     "ytd-feed-filter-chip-bar-renderer",
@@ -17,7 +18,7 @@ export class FeedManager {
         this.pageContainer = document.querySelector("ytd-page-manager");
 
         // Initialize the video filter
-        this.videoFilter = new VideoFilter("FEED");
+        this.videoFilter = new FeedFilter();
 
         // Initialize the observer that observes mutations in the feeds
         this.feedObserver = new MutationObserver(this.feedMutationCallback);
@@ -33,8 +34,8 @@ export class FeedManager {
         // Get the video link node and id
         const videoNode = utils.getVideoThumbnailNode(node);
         if (videoNode) {
-            // Add video to the video store
-            this.videoFilter.addVideoToStore(videoNode);
+            // Filter the video
+            this.videoFilter.filterVideo(videoNode);
         }
     };
 
@@ -48,7 +49,7 @@ export class FeedManager {
         const videoId = utils.getVideoId(videoLinkNode);
 
         if (videoId) {
-            this.videoFilter.addVideoToStore({
+            this.videoFilter.filterVideo({
                 videoId: videoId,
                 relevantNode: videoLinkNode,
             });
@@ -96,7 +97,6 @@ export class FeedManager {
     };
 
     public blockDistractiveVideos = (allowedCategories: string[]) => {
-        console.log("[Feed] Blocking distractive videos");
         // Set the video filter's allowList
         this.videoFilter.allowedCategories = allowedCategories;
         // Start the mutation observations
@@ -117,8 +117,8 @@ export class FeedManager {
             const videoId = utils.getVideoId(videoLinkNode);
 
             if (videoId) {
-                // Add video to the video store
-                this.videoFilter.addVideoToStore({
+                // Filter the video
+                this.videoFilter.filterVideo({
                     videoId: videoId,
                     relevantNode: videoLinkNode,
                 });
@@ -134,8 +134,6 @@ export class FeedManager {
     };
 
     public unblockDistractiveVideos = () => {
-        console.log("[Feed] Unblocking distractive videos");
-
         // Stop the mutation observation
         this.feedObserver.disconnect();
 

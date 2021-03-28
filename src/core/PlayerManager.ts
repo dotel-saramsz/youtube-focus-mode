@@ -1,5 +1,6 @@
 import { VideoFilter } from "./VideoFilter";
 import * as utils from "../utils";
+import { PlayerFilter } from "./PlayerFilter";
 
 /** The class that manages the video feeds */
 export class PlayerManager {
@@ -11,7 +12,7 @@ export class PlayerManager {
         this.videoPlayer = document.querySelector("ytd-watch-flexy");
 
         // Initialize the video filter
-        this.videoFilter = new VideoFilter("VIDEOPLAYER");
+        this.videoFilter = new PlayerFilter();
 
         // Initialize the observer that observes mutations in the video player
         this.videoObserver = new MutationObserver(this.videoMutationCallback);
@@ -29,9 +30,6 @@ export class PlayerManager {
                     "video-id"
                 );
                 const oldVideoId = mutation.oldValue;
-                console.log(
-                    `Video player video-id changed from ${oldVideoId} to ${newVideoId}`
-                );
                 if (newVideoId != oldVideoId) {
                     // Video Id in the player element changed.
                     // Get the relevant video node
@@ -39,7 +37,7 @@ export class PlayerManager {
                         mutation.target
                     );
                     if (relevantNode) {
-                        this.videoFilter.addVideoToStore({
+                        this.videoFilter.filterVideo({
                             videoId: newVideoId,
                             relevantNode: relevantNode,
                         });
@@ -50,8 +48,6 @@ export class PlayerManager {
     };
 
     public blockDistractiveVideo = (allowedCategories: string[]) => {
-        console.log("[Videoplayer] Blocking the video in video player");
-
         // Set the allowList for the video filter
         this.videoFilter.allowedCategories = allowedCategories;
 
@@ -69,7 +65,7 @@ export class PlayerManager {
         const videoId = this.videoPlayer?.getAttribute("video-id");
 
         if (playerContainer && videoId) {
-            this.videoFilter.addVideoToStore({
+            this.videoFilter.filterVideo({
                 videoId: videoId,
                 relevantNode: playerContainer,
             });
@@ -77,8 +73,6 @@ export class PlayerManager {
     };
 
     public unblockDistractiveVideo = () => {
-        console.log("[Videoplayer] Unblocking the video in the video player");
-
         // Stop the mutation observations
         this.videoObserver.disconnect();
 

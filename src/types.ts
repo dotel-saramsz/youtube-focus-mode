@@ -28,3 +28,12 @@ export type MessageType =
     | ToggleAppStatus
     | ChosenCategoriesList
     | ChangeChosenCategories;
+
+export interface VideoNode {
+    videoId: string;
+    relevantNode: Node;
+}
+
+export interface VideoIdstoNodes {
+    [videoId: string]: VideoNode;
+}

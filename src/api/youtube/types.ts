@@ -1,4 +1,4 @@
-export interface VideoData {
+export interface YoutubeVideoData {
     videoId: string;
     title: string;
     description: string;

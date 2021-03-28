@@ -61,16 +61,10 @@ chrome.runtime.onMessage.addListener(
         switch (message.type) {
             case "APP_STATUS":
                 appEnabled = message.appEnabled;
-                console.log(
-                    `[Content] App status changed: ${message.appEnabled}`
-                );
                 runApp(appEnabled, chosenCategories);
                 break;
             case "CHOSEN_CATEGORIES_LIST":
                 chosenCategories = message.chosenCategories;
-                console.log(
-                    `[Content] Chosen categories changed: ${message.chosenCategories}`
-                );
                 runApp(appEnabled, chosenCategories);
                 break;
             default:

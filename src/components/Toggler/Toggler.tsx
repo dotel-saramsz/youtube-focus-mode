@@ -10,9 +10,6 @@ export const Toggler = () => {
 
     const onToggled = () => {
         // The app state was toggled by the user
-        console.log(
-            `[Toggler] Old App State: ${appEnabled}, New App State: ${!appEnabled}`
-        );
         // Send the message to background script
         chrome.runtime.sendMessage({
             type: "TOGGLE_STATUS",

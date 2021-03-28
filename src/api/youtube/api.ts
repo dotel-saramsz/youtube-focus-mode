@@ -1,5 +1,5 @@
 import axios from "axios";
-import { VideoData } from "./types";
+import { YoutubeVideoData } from "./types";
 
 const API_KEY = "AIzaSyCLtPIDnh66lUXv440RfC09ztaQekc2KxA";
 const FETCH_URL = "https://youtube.googleapis.com/youtube/v3/videos";
@@ -7,7 +7,7 @@ const FETCH_URL = "https://youtube.googleapis.com/youtube/v3/videos";
 // Function to get the data from YouTube's API
 export const getVideoData = async (
     videoIds: string[]
-): Promise<VideoData[]> => {
+): Promise<YoutubeVideoData[]> => {
     // Form the query parameter
     const queryParameters = {
         part: "snippet, statistics",
@@ -15,9 +15,10 @@ export const getVideoData = async (
         key: API_KEY,
     };
 
-    const videoList: VideoData[] = [];
+    const videoList: YoutubeVideoData[] = [];
 
     try {
+        console.log(`Sending API request with ${videoIds.length} items`);
         const response = await axios.get(FETCH_URL, {
             params: queryParameters,
         });

@@ -1,5 +1,5 @@
 import { CATEGORIES_IDS_TO_NAMES, CATEGORIES_NAMES_TO_IDS } from "./constants";
-import { VideoNode } from "./core/VideoFilter";
+import { VideoNode } from "./types";
 
 /**
  * Gets the video id and video link node from the thumbnail container
