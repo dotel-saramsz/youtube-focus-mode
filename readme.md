@@ -6,16 +6,12 @@
 
 ## Installation
 
-### A. Download as ZIP
+### A. From Chrome Web Store
 
-The easiest way to begin using the extension is to download its build as a `.zip` file.
+The easiest way to begin using the extension is to install it from Chrome Web Store.
 
-1. Download the `download/youtubefocusmode.zip` file from the repository.
-2. Unzip the file to your desired directory.
-```
-$ unzip <DOWNLOAD DIRECTORY>/youtubefocusmode.zip -d <YOUR DESIRED DIRECTORY>
-```
-3. The extension will be unzipped into your desired directory. This directory contains the necessary `js` files and static files to run the extension.  
+1. Click on this [link](https://chrome.google.com/webstore/detail/youtube-focus-mode/jedeklblgiihonnldgldeagmbkhlblek/) to view the extension in Chrome Web Store.
+2. Add the extension to Chrome and choose your preferred video categories.  
 
 ### B. Build Manually
 
@@ -30,14 +26,11 @@ $ npm install
 ```
 $ npm run build
 ```
-4. After the build is complete, a `dist/` directory is created in the root directory of the project. This directory contains the necessary `js` files and static files to run the extension. 
- 
-### C. Loading into Chrome
-To use the extension, load it into your Chrome browser:
+4. After the build is complete, a `dist/` directory is created in the root directory of the project. This directory contains the necessary `js` files and static files to run the extension. To use the extension, load it into your Chrome browser:
 
-   1. Open chrome and navigate to `chrome://extensions`
+   1. Open chrome and navigate to `chrome://extensions`.
    2. Click on `Load unpacked` (Make sure that *Developer Mode* is enabled in Chrome).
-   3. Select the directory containing the files of the extension that was created above in step `A3` or `B4`
+   3. Select the `dist/` directory that was created above.
 
 ## Usage
 
