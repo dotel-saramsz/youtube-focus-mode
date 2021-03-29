@@ -12,7 +12,10 @@ The easiest way to begin using the extension is to download its build as a `.zip
 
 1. Download the `download/youtubefocusmode.zip` file from the repository.
 2. Unzip the file to your desired directory.
-3. The extension will be unzipped into a directory `dist/` in your desired directory.  
+```
+$ unzip <DOWNLOAD DIRECTORY>/youtubefocusmode.zip -d <YOUR DESIRED DIRECTORY>
+```
+3. The extension will be unzipped into your desired directory. This directory contains the necessary `js` files and static files to run the extension.  
 
 ### B. Build Manually
 
@@ -33,8 +36,8 @@ $ npm run build
 To use the extension, load it into your Chrome browser:
 
    1. Open chrome and navigate to `chrome://extensions`
-   2. Click on `Load Unpacked` (Make sure that *Developer Mode* is enabled in Chrome).
-   3. Select the `dist/` directory that was created above. 
+   2. Click on `Load unpacked` (Make sure that *Developer Mode* is enabled in Chrome).
+   3. Select the directory containing the files of the extension that was created above in step `A3` or `B4`
 
 ## Usage
 
